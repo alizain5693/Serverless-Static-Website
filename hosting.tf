@@ -199,7 +199,8 @@ output "s3-website-url" {
   value = aws_s3_bucket.res-bucket.website_endpoint
 }
 
-# # CloudFront distribution domain name
-# output "cf-domain-name" {
-#   value = aws_cloudfront_distribution.s3_distribution.domain_name
-# }
+# CloudFront distribution domain name
+output "cf-domain-name" {
+  value = aws_cloudfront_distribution.s3_distribution.domain_name
+}
+
