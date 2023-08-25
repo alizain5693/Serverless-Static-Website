@@ -42,12 +42,15 @@ policy = <<EOF
                 "s3:GetObject"
             ],
             "Resource": [
-                "arn:aws:s3:::zain-tech-bucket/*"
+                "arn:aws:s3:::${var.bucketName}/*"
             ]
         }
     ]
 }
 EOF
+depends_on = [
+    aws_s3_bucket.res-bucket
+  ]
 
 }
 
@@ -57,6 +60,7 @@ resource "aws_s3_object" "index" {
   key    = "index.html"
   source = "./src/index.html"
   etag = filemd5("./src/index.html")
+  content_type = "text/html"
   depends_on = [
     aws_s3_bucket.res-bucket
   ]
@@ -67,6 +71,7 @@ resource "aws_s3_object" "error" {
   key    = "error.html"
   source = "./src/error.html"
   etag = filemd5("./src/error.html")
+  content_type = "text/html"
   depends_on = [
     aws_s3_bucket.res-bucket
   ]
@@ -181,6 +186,10 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   viewer_certificate {
     cloudfront_default_certificate = true
   }
+
+  depends_on = [
+    aws_s3_bucket.res-bucket
+  ]
 }
 
 
@@ -190,7 +199,7 @@ output "s3-website-url" {
   value = aws_s3_bucket.res-bucket.website_endpoint
 }
 
-# CloudFront distribution domain name
-output "cf-domain-name" {
-  value = aws_cloudfront_distribution.s3_distribution.domain_name
-}
+# # CloudFront distribution domain name
+# output "cf-domain-name" {
+#   value = aws_cloudfront_distribution.s3_distribution.domain_name
+# }
